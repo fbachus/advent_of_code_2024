@@ -26,11 +26,11 @@ fn parse_input(file: &str) -> Vec<String> {
         .expect("could not read file");
     string.split("\n")
         .map(ToString::to_string)
-        .filter(|x| x != "")
+        .filter(|x| !x.is_empty())
         .collect::<Vec<String>>()
 }
 
-fn task_one(first_col: &Vec<usize>, second_col: &Vec<usize>) -> usize {
+fn task_one(first_col: &[usize], second_col: &[usize]) -> usize {
     first_col
         .iter()
         .zip(second_col)
@@ -38,7 +38,7 @@ fn task_one(first_col: &Vec<usize>, second_col: &Vec<usize>) -> usize {
         .sum()
 }
 
-fn task_two(first_col: &Vec<usize>, second_col: &Vec<usize>) -> usize {
+fn task_two(first_col: &[usize], second_col: &[usize]) -> usize {
     first_col
         .iter()
         .map(|x| x * second_col.iter().filter(|&y| y == x).count())

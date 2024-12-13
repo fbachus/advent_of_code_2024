@@ -1,5 +1,5 @@
 #![feature(iter_map_windows)]
-use std::{fs, isize};
+use std::fs;
 
 fn main() {
     let input: Vec<Vec<isize>> = parse_input("day_2/input.txt");
@@ -9,15 +9,15 @@ fn main() {
     println!("Task One: {}\nTask Two: {}", result_one, result_two);
 }
 
-fn task_one(input: &Vec<Vec<isize>>) -> usize {
-    input.iter().filter(|x| safe_report(&x, 0)).count()
+fn task_one(input: &[Vec<isize>]) -> usize {
+    input.iter().filter(|x| safe_report(x, 0)).count()
 }
 
-fn task_two(input: &Vec<Vec<isize>>) -> usize {
-    input.iter().filter(|x| safe_report(&x, 1)).count()
+fn task_two(input: &[Vec<isize>]) -> usize {
+    input.iter().filter(|x| safe_report(x, 1)).count()
 }
 
-fn safe_report(report: &Vec<isize>, mut fault_tolerance: isize) -> bool {
+fn safe_report(report: &[isize], mut fault_tolerance: isize) -> bool {
     let diff: Vec<isize> = report.iter()
         .map_windows(|[&x,&y]| (x-y)).collect();
     fault_tolerance -= diff.iter()
