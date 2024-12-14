@@ -49,12 +49,11 @@ impl WordAssistant <'_> {
 }
 
 fn main() {
-    let input = parse_input("input.txt");
-    //let input = parse_input("day_4/input.txt");
+    let input = parse_input("day_4/input.txt");
     //let find_this = ['X', 'M', 'A', 'S'];
     let find_this: Vec<char> = "XMAS".chars().collect();
     let res_one = task_one(&input, &find_this);
-    let res_two = task_two(&input, &find_this);
+    let res_two = task_two(&input, &find_this[1..4]);
     println!("Task One: {}\nTask Two: {}", res_one, res_two);
 }
 
@@ -82,13 +81,47 @@ fn task_one(input: &[Vec<char>], word_to_find: &[char]) -> usize {
 }
 
 fn task_two(input: &[Vec<char>], word_to_find: &[char]) -> usize {
-    //todo!();
-    0
+    let anchor = 1;
+    println!("{}", input.len());
+    input.iter().enumerate()
+        .filter(|(i, _)|
+            *i > 0 &&
+            *i < input.len() - 1)
+        .map(|(i,y)| {
+            y.iter().enumerate()
+                .filter(|(j, x)|
+                    **x == word_to_find[anchor] &&
+                    *j > 0 &&
+                    *j < input[i].len() - 1)
+                .filter(|(j,_)| {
+                    [(-1, 1), (1, 1)].iter()
+                        .filter(move |(move_x, move_y)| {
+                            check_surrounding(input, (*j, i), (*move_x, *move_y))
+                        }).count() > 1
+                }).count()
+        }).sum::<usize>()
+}
+
+fn check_surrounding(field: &[Vec<char>], pos: (usize, usize), dir: (isize, isize)) -> bool{
+    let other_chars = ['M', 'S'];
+    let new_pos = |p: usize, d: isize, m: isize| {
+        usize::try_from(p as isize + d * m).unwrap()
+    };
+    [[0,1], [1,0]].iter() // check 'M' and 'S'
+        // zip, to multiply one of the conditions with -1, to check that
+        // opposite the 'M' will be an 'S'
+        .any(|i| std::iter::zip(i, [1,-1])
+            .all(|(j,m)| other_chars[*j] == field
+                [new_pos(pos.1, dir.1, m)] 
+                [new_pos(pos.0, dir.0, m)]
+            )
+        )
 }
 
 fn parse_input(input: &str) -> Vec<Vec<char>> {
     fs::read_to_string(input)
         .expect("Could not read file")
+        .trim()
         .split("\n")
         .map(|x| x.chars().collect::<Vec<char>>())
         .collect::<Vec<Vec<char>>>()
