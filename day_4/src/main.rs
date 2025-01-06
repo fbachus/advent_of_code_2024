@@ -62,10 +62,9 @@ fn task_one(input: &[Vec<char>], word_to_find: &[char]) -> usize {
         y.iter().enumerate()
             .filter(|(_, x)| x == &&word_to_find[0])
             .map(|(j,_)| { // generate directions to check in 
-                (-1..=1).map(move |move_y| {
+                (-1..=1).flat_map(move |move_y| {
                     (-1..=1).map(move |move_x| (move_x, move_y))
                 })
-                .flatten()
                 .filter(move |(move_x, move_y)| {
                     if move_y == &0 && move_x == &0 { return false }
                     let mut word = WordAssistant {
